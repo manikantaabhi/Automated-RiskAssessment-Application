@@ -1,5 +1,7 @@
 package com.tool.AutomatedRiskAssessment.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +39,9 @@ public class UserService {
         newUser.setOrganization(signupRequest.getOrganization());
         userRepository.save(newUser);
         return true;
+    }
+    public List<User> getAllUsers()
+    {
+    	return userRepository.findAll();
     }
 }

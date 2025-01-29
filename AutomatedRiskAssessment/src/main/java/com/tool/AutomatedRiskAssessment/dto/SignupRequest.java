@@ -72,4 +72,11 @@ public class SignupRequest {
 	public void setOrganization(String organization) {
 		this.organization = organization;
 	}
+
+	@Override
+	public String toString() {
+		return "SignupRequest [firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone + ", email="
+				+ email + ", username=" + username + ", password=" + password + ", organization=" + organization + "]";
+	}
+	
 }
