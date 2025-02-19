@@ -1,21 +1,19 @@
 package com.tool.AutomatedRiskAssessment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class SignupRequest {
-	private String firstName;
-
-	private String lastName;
-	private String phone;
-	private String email;
-	private String username;
-	private String password;
-	private String organization;
+    private String firstName;
+    private String lastName;
+    private String phone;
+    private String email;
+    private String username;
+    private String password;
+    private String organization;
 
 	public String getFirstName() {
 		return firstName;
