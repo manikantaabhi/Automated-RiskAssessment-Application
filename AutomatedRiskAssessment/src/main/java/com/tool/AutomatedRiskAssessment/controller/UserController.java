@@ -13,6 +13,7 @@ import com.tool.AutomatedRiskAssessment.model.User;
 import com.tool.AutomatedRiskAssessment.service.UserService;
 import com.tool.AutomatedRiskAssessment.dto.ResetRequest;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,18 +70,21 @@ public class UserController {
 
     // New endpoint for password reset
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> sendResetLink(@RequestBody ResetRequest resetRequest) {
+    public ResponseEntity<Map<String, String>> sendResetLink(@RequestBody ResetRequest resetRequest) {
         String email = resetRequest.getEmail();
-
-        // Call the service layer to send the password reset link
         boolean emailSent = userService.sendPasswordResetLink(email);
-
+        
+        Map<String, String> response = new HashMap<>();
         if (emailSent) {
-            return ResponseEntity.ok("Reset link sent to " + email);
+            response.put("message", "Password reset link is sent to your mail ID. Kindly check your mail.");
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email not found or invalid");
+            response.put("message", "Email not found or invalid");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+
     
     @PutMapping("/reset-password")
     public ResponseEntity<String> updatePassword(@RequestBody ResetRequest resetRequest) {
