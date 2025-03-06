@@ -93,7 +93,10 @@ public class UserService {
         return false;  // ❌ User not found
     }
 
-
+    public String getEmailByUserName(String userName)
+    {
+    	return userRepository.findByUsername(userName).get().getEmail();
+    }
 
 
 
