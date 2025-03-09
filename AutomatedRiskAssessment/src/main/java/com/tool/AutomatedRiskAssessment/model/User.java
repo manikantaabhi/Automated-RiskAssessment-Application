@@ -5,11 +5,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "users")  // Ensuring it maps to the "users" table in DB
 public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false)
     private String firstName;
 
@@ -19,6 +14,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Id
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -32,9 +28,9 @@ public class User {
     public User() {}
 
     // All-args constructor
-    public User(Long id, String firstName, String lastName, String phone, String email,
+    public User(String firstName, String lastName, String phone, String email,
                 String username, String password, String organization) {
-        this.id = id;
+        
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -44,14 +40,7 @@ public class User {
     }
 
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    
     public String getFirstName() {
         return firstName;
     }
@@ -103,7 +92,6 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
