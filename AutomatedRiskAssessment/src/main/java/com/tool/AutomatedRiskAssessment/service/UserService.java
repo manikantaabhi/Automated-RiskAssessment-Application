@@ -25,6 +25,7 @@ public class UserService {
     @Autowired
     private JavaMailSender emailSender;  // Inject email sender for sending email
     
+    
     //private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // Login validation
