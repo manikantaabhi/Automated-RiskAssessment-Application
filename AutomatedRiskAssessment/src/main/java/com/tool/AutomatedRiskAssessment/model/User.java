@@ -32,7 +32,7 @@ public class User {
     public User() {}
 
     // All-args constructor
-    public User(Long id, String firstName, String lastName, String phone, String email,
+    public User(Long id, String firstName, String lastName, String email,
                 String username, String password, String organization) {
         this.id = id;
         this.firstName = firstName;
@@ -98,6 +98,11 @@ public class User {
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    // Added convenience method to get the user's email (if needed by other code)
+    public String getUserEmail() {
+        return this.email;
     }
 
     @Override

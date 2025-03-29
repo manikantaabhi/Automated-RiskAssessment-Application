@@ -1,18 +1,15 @@
 package com.tool.AutomatedRiskAssessment.service;
 
+import com.tool.AutomatedRiskAssessment.dto.SignupRequest;
+import com.tool.AutomatedRiskAssessment.model.User;
+import com.tool.AutomatedRiskAssessment.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.tool.AutomatedRiskAssessment.dto.SignupRequest;
-import com.tool.AutomatedRiskAssessment.dto.ResetRequest;
-import com.tool.AutomatedRiskAssessment.model.User;
-import com.tool.AutomatedRiskAssessment.repo.UserRepository;
-
 import java.util.List;
 import java.util.Optional;
-
 
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -24,7 +21,7 @@ public class UserService {
 
     @Autowired
     private JavaMailSender emailSender;  // Inject email sender for sending email
-    
+
     //private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // Login validation
@@ -62,7 +59,6 @@ public class UserService {
         message.setSubject("Password Reset Request");
         message.setText("Hi, \n\nClick the link below to reset your password:\n\nhttp://localhost:4200/reset-password");
 
-
         try {
             // Send the email
             emailSender.send(message);
@@ -78,26 +74,26 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    
 
- // Method to update password
+    // Method to update password
     public boolean updatePassword(String username, String newPassword) {
         Optional<User> userOptional = userRepository.findByUsername(username);
-        
+
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setPassword(newPassword);  // ✅ Updates the password column
-            userRepository.save(user);  // ✅ Save updated password in the database
+            user.setPassword(newPassword);  // Updates the password column
+            userRepository.save(user);  // Save updated password in the database
             return true;
         }
-        return false;  // ❌ User not found
+        return false;  // User not found
     }
 
-    public String getEmailByUserName(String userName)
-    {
-    	return userRepository.findByUsername(userName).get().getEmail();
+    // NEW METHOD: Retrieve user by username
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
-
-
+    public String getEmailByUserName(String userName) {
+        return userRepository.findByUsername(userName).get().getEmail();
+    }
 }

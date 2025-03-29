@@ -1,6 +1,5 @@
 package com.tool.AutomatedRiskAssessment.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -39,6 +38,16 @@ public class EmailService {
         helper.setSubject("Your OTP for Login");
         helper.setText("Your One-Time Password (OTP) is: <b>" + otp + "</b>", true);
 
+        mailSender.send(message);
+    }
+
+    // New generic email sender for vulnerability notifications and other emails
+    public void sendEmail(String toEmail, String subject, String text) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setText(text, true);
         mailSender.send(message);
     }
 
