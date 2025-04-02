@@ -13,6 +13,9 @@ import java.security.SecureRandom;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.core.io.ByteArrayResource;
+
+
 @Service
 public class EmailService {
 
@@ -75,4 +78,20 @@ public class EmailService {
             return timestamp;
         }
     }
+    
+    // New Method: Send Excel Report as an Email Attachment
+    public void sendExcelReport(String toEmail, byte[] excelData) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(toEmail);
+        helper.setSubject("Vulnerability Report");
+        helper.setText("Please find your organization's vulnerability report attached.", true);
+
+        // Attach the Excel file
+        helper.addAttachment("Vulnerability_Report.xls", new ByteArrayResource(excelData));
+
+        mailSender.send(message);
+    }
+    
 }
