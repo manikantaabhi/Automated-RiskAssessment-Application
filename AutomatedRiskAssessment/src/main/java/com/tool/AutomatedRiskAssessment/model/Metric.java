@@ -16,11 +16,10 @@ public class Metric {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vulnerability_id", nullable = false)
-    @JsonBackReference
-    private Vulnerability vulnerability;
+    
+    
+    @Column(nullable=false, unique = true)
+    private String cveId;
 
     private String source;
     private Double score;
@@ -35,13 +34,14 @@ public class Metric {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public Vulnerability getVulnerability() {
-		return vulnerability;
+	
+	
+	public String getCveId() {
+		return cveId;
 	}
 
-	public void setVulnerability(Vulnerability vulnerability) {
-		this.vulnerability = vulnerability;
+	public void setCveId(String cveId) {
+		this.cveId = cveId;
 	}
 
 	public String getSource() {
@@ -72,10 +72,10 @@ public class Metric {
     	
     }
 
-    public Metric(String source, Double score, String severity, Vulnerability vulnerability) {
+    public Metric(String source, Double score, String severity, String cveId) {
         this.source = source;
         this.score = score;
         this.severity = severity;
-        this.vulnerability = vulnerability;
+        this.cveId = cveId;
     }
 }
