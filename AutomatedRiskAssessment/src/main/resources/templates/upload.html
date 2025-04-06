@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Scheduled Jobs</title>
+</head>
+<body>
+<h1>Upload Scheduled Jobs</h1>
+<form method="post" enctype="multipart/form-data" th:action="@{/uploadFile}">
+    <input type="file" name="file" accept=".csv" required/>
+    <button type="submit">Upload</button>
+</form>
+<p th:text="${message}"></p>
+</body>
+</html>
