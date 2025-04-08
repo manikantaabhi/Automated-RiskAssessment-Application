@@ -39,4 +39,21 @@ public class Mitigation {
     public void setCveId(String cveId) {
         this.cveId = cveId;
     }
+
+	public String getMitigationText() {
+		return mitigationText;
+	}
+
+	public void setMitigationText(String mitigationText) {
+		this.mitigationText = mitigationText;
+	}
+
+	public LocalDateTime getTime() {
+		return time;
+	}
+
+	public void setTime(LocalDateTime time) {
+		this.time = time;
+	}
+    
 }

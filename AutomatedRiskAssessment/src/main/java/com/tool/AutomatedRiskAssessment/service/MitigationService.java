@@ -11,8 +11,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +25,7 @@ public class MitigationService {
 	    private final VulnerabilityRepository vulnerabilityRepository;
 	    private final MitigationRepository mitigationRepository;
 	    private final OkHttpClient client;
-
+	    private boolean error=false;
 	    @Autowired
 	    public MitigationService(VulnerabilityRepository vulnerabilityRepository, MitigationRepository mitigationRepository) {
 	        this.vulnerabilityRepository = vulnerabilityRepository;
@@ -41,16 +43,29 @@ public class MitigationService {
     public void processVulnerabilities() {
         List<Vulnerability> vulnerabilities = vulnerabilityRepository.findAll();
         for (Vulnerability vulnerability : vulnerabilities) {
-            // Check if mitigation already exists for this CVE ID
-            if (mitigationRepository.findByCveId(vulnerability.getCveId()).isEmpty()) {
-                generateMitigationAsync(vulnerability);
+            if (mitigationRepository.findByCveId(vulnerability.getCveId())==null) {
+            	if(!error)
+            		generateMitigationAsync(vulnerability);
             }
+        }
+    }
+    @Async
+    public void processVulnerabilities(String cveId) {
+            if (mitigationRepository.findByCveId(cveId)==null) {
+            	Optional<Vulnerability> x=vulnerabilityRepository.findByCveId(cveId);
+            	if(x.isPresent())
+            		generateMitigationAsync(x.get());
+            	else {
+					System.out.println("No cveId in Vulnerability table :"+cveId);
+				}
         }
     }
 
     @Async
     public CompletableFuture<Void> generateMitigationAsync(Vulnerability vulnerability) {
-        String prompt = "Provide a short mitigation just in 2 lines for: " + vulnerability.getDescription()+" Please do not add any extra text like Here are details or headings etc, just give me exactly the mitigation";
+        String prompt = "Provide a short mitigation just in 2 lines for: " + vulnerability.getDescription()
+                + " Please do not add any extra text like Here are details or headings etc, just give me exactly the mitigation";
+
         Request request = new Request.Builder()
                 .url(OLLAMA_URL)
                 .post(RequestBody.create(MediaType.parse("application/json"),
@@ -58,34 +73,55 @@ public class MitigationService {
                 .addHeader("Accept", "application/json")
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) {
-                return CompletableFuture.completedFuture(null);
-            }
+        try {
+            try (Response response = executeWithRetry(request, 3)) {
 
-            String responseBody = response.body().string(); // Read full response
-            StringBuilder mitigationText = new StringBuilder();
-
-            // Split response into JSON objects (assuming newline-separated JSON objects)
-            for (String line : responseBody.split("\n")) {
-                JSONObject jsonObject = new JSONObject(line);
-                mitigationText.append(jsonObject.optString("response", ""));
-            }
-
-            String mitigationFinal = mitigationText.toString().trim();
-            System.out.println(mitigationFinal);
-            //System.out.println(mitigationFinal);
-            if (!mitigationFinal.isEmpty()) {
-                Mitigation mitigation = new Mitigation(mitigationFinal, LocalDateTime.now(), vulnerability.getCveId());
-                if (mitigationRepository.findByCveId(vulnerability.getCveId()).size()==0) {
-                	mitigationRepository.save(mitigation);
+                if (!response.isSuccessful() || response.body() == null) {
+                    return CompletableFuture.completedFuture(null);
                 }
-                
+
+                String responseBody = response.body().string();
+                StringBuilder mitigationText = new StringBuilder();
+                for (String line : responseBody.split("\n")) {
+                    JSONObject jsonObject = new JSONObject(line);
+                    mitigationText.append(jsonObject.optString("response", ""));
+                }
+
+                String mitigationFinal = mitigationText.toString().trim();
+                if (!mitigationFinal.isEmpty()) {
+                    Mitigation mitigation = new Mitigation(mitigationFinal, LocalDateTime.now(), vulnerability.getCveId());
+                    if (mitigationRepository.findByCveId(vulnerability.getCveId()) == null) {
+                        mitigationRepository.save(mitigation);
+                    }
+                }
             }
+        } catch (SocketTimeoutException e) {
+            System.err.println("Timeout while calling Ollama API for CVE: " + vulnerability.getCveId());
+            error=true;
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Failed generating Mitigation for CVE : "+vulnerability.getCveId());
+        	error=true;
+            System.err.println("IO error during Ollama API call: " + e.getMessage());
+            processVulnerabilities();
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return CompletableFuture.completedFuture(null);
     }
+    private Response executeWithRetry(Request request, int maxRetries) throws IOException {
+        int attempt = 1;
+        while (attempt < maxRetries) {
+            try {
+                return client.newCall(request).execute();
+            } catch (SocketTimeoutException e) {
+                attempt++;
+                if (attempt >= maxRetries) throw e;
+            }
+        }
+        throw new IOException("Failed after retries");
+    }
+
 
 }

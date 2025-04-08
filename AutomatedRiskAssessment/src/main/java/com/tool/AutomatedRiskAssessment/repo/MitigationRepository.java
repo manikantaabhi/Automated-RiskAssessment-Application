@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 public interface MitigationRepository extends JpaRepository<Mitigation, Long> {
-	List<Mitigation> findByCveId(String cveId);
+	Mitigation findByCveId(String cveId);
 
 }
