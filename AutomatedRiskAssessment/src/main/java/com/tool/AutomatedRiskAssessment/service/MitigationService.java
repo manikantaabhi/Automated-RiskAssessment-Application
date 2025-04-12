@@ -49,20 +49,19 @@ public class MitigationService {
             }
         }
     }
-    @Async
-    public void processVulnerabilities(String cveId) {
+    public String processVulnerabilities(String cveId) {
             if (mitigationRepository.findByCveId(cveId)==null) {
             	Optional<Vulnerability> x=vulnerabilityRepository.findByCveId(cveId);
             	if(x.isPresent())
-            		generateMitigationAsync(x.get());
+            		return generateMitigationAsync(x.get());
             	else {
 					System.out.println("No cveId in Vulnerability table :"+cveId);
 				}
         }
+			return "Not Found";
     }
 
-    @Async
-    public CompletableFuture<Void> generateMitigationAsync(Vulnerability vulnerability) {
+    public String generateMitigationAsync(Vulnerability vulnerability) {
         String prompt = "Provide a short mitigation just in 2 lines for: " + vulnerability.getDescription()
                 + " Please do not add any extra text like Here are details or headings etc, just give me exactly the mitigation";
 
@@ -77,7 +76,7 @@ public class MitigationService {
             try (Response response = executeWithRetry(request, 3)) {
 
                 if (!response.isSuccessful() || response.body() == null) {
-                    return CompletableFuture.completedFuture(null);
+                    return null;
                 }
 
                 String responseBody = response.body().string();
@@ -93,6 +92,7 @@ public class MitigationService {
                     if (mitigationRepository.findByCveId(vulnerability.getCveId()) == null) {
                         mitigationRepository.save(mitigation);
                     }
+                    return mitigationFinal;
                 }
             }
         } catch (SocketTimeoutException e) {
@@ -108,7 +108,7 @@ public class MitigationService {
             e.printStackTrace();
         }
 
-        return CompletableFuture.completedFuture(null);
+        return null;
     }
     private Response executeWithRetry(Request request, int maxRetries) throws IOException {
         int attempt = 1;
