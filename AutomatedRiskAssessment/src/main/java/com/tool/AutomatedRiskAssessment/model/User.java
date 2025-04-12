@@ -1,10 +1,22 @@
 package com.tool.AutomatedRiskAssessment.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+import java.util.List;
 
 @Entity
-@Table(name = "users")  // Ensuring it maps to the "users" table in DB
+@Table(name = "users")  
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class User {
+    @Id
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @Column(nullable = false)
     private String firstName;
 
@@ -14,90 +26,70 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Id
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    @Column(nullable = false)  // Maps to "password" column in DB
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
     private String organization;
 
-    // Default constructor
-    public User() {}
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVulnerabilityHistory> savedVulnerabilities;
 
-    // All-args constructor
-    public User(String firstName, String lastName, String phone, String email,
-                String username, String password, String organization) {
-        
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.organization = organization;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    // Getters and Setters
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
+
+	public List<UserVulnerabilityHistory> getSavedVulnerabilities() {
+		return savedVulnerabilities;
+	}
+
+	public void setSavedVulnerabilities(List<UserVulnerabilityHistory> savedVulnerabilities) {
+		this.savedVulnerabilities = savedVulnerabilities;
+	}
     
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", organization='" + organization + '\'' +
-                '}';
-    }
+    
 }
