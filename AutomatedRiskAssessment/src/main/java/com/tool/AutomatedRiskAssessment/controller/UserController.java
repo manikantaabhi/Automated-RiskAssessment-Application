@@ -90,7 +90,7 @@ public class UserController {
         return x;
     }
 
-    // Updated GET endpoint: Query by username or return all users if username not provided
+
     @GetMapping
     public ResponseEntity<?> getUsers(@RequestParam(required = false) String username) {
         if (username != null && !username.isEmpty()) {
@@ -116,7 +116,7 @@ public class UserController {
         return "added";
     }
 
-    // New endpoint for password reset
+
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> sendResetLink(@RequestBody ResetRequest resetRequest) {
         String email = resetRequest.getEmail();

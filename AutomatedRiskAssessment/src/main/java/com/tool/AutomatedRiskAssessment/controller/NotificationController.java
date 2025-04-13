@@ -16,13 +16,13 @@ public class NotificationController {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    // GET endpoint returns only unread notifications for the provided userId
+
     @GetMapping
     public List<Notification> getUnreadNotifications(@RequestParam Long userId) {
         return notificationRepository.findByUserIdAndReadFlagFalse(userId);
     }
 
-    // PATCH endpoint to mark a notification as read
+
     @PatchMapping("/{id}")
     public ResponseEntity<Notification> markAsRead(@PathVariable Long id, @RequestBody Notification update) {
         Optional<Notification> optNotification = notificationRepository.findById(id);
@@ -30,7 +30,7 @@ public class NotificationController {
             return ResponseEntity.notFound().build();
         }
         Notification notification = optNotification.get();
-        // Update the read flag based on the incoming JSON (make sure JSON property "read" is mapped correctly)
+
         notification.setReadFlag(update.isReadFlag());
         notificationRepository.save(notification);
         return ResponseEntity.ok(notification);

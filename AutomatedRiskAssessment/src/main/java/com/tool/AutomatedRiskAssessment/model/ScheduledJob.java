@@ -21,7 +21,7 @@ public class ScheduledJob {
     private String keywords;
     private Long userId;
 
-    // New field for storing user's email address
+
     @Column(name = "user_email")
     private String userEmail;
 
@@ -38,7 +38,7 @@ public class ScheduledJob {
         }
     }
 
-    // Getters and setters
+
     public Long getId() {
         return id;
     }
@@ -91,7 +91,7 @@ public class ScheduledJob {
         this.userId = userId;
     }
 
-    // New getter and setter for userEmail
+
     public String getUserEmail() {
         return userEmail;
     }

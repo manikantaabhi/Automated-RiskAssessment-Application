@@ -15,13 +15,13 @@ public class ScheduledJobController {
 
     @PostMapping
     public ScheduledJob createJob(@RequestBody ScheduledJob job) {
-        // Save the job and return the saved entity
+
         return jobRepository.save(job);
     }
 
     @GetMapping
     public ResponseEntity<?> getJobsByUser(@RequestParam Long userId) {
-        // Only return jobs for the given userId that are still scheduled
+
         return ResponseEntity.ok(jobRepository.findByUserIdAndStatus(userId, ScheduledJob.JobStatus.SCHEDULED));
     }
 

@@ -20,17 +20,15 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private JavaMailSender emailSender;  // Inject email sender for sending email
+    private JavaMailSender emailSender;
 
-    //private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // Login validation
     public boolean validateUser(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
         return user.isPresent() && user.get().getPassword().equals(password);
     }
 
-    // Signup logic
+
     public boolean registerUser(SignupRequest signupRequest) {
         if (userRepository.findByUsername(signupRequest.getUsername()).isPresent()) {
             return false; // User already exists
@@ -47,48 +45,44 @@ public class UserService {
         return true;
     }
 
-    // Method to send password reset link to the user's email
-    // Logic to send email (e.g., reset password link)
-    public boolean sendPasswordResetLink(String email) {
-        // Check if the user exists, for example, using email (you can customize this)
-        // For simplicity, let's assume the user exists
 
-        // Create the email content
+    public boolean sendPasswordResetLink(String email) {
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Password Reset Request");
         message.setText("Hi, \n\nClick the link below to reset your password:\n\nhttp://localhost:4200/reset-password");
 
         try {
-            // Send the email
+
             emailSender.send(message);
             return true;
         } catch (Exception e) {
-            // Log error and return false if email sending fails
+
             System.out.println("Error sending email: " + e.getMessage());
             return false;
         }
     }
 
-    // Get all users
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Method to update password
+
     public boolean updatePassword(String username, String newPassword) {
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setPassword(newPassword);  // Updates the password column
-            userRepository.save(user);  // Save updated password in the database
+            user.setPassword(newPassword);
+            userRepository.save(user);
             return true;
         }
-        return false;  // User not found
+        return false;
     }
 
-    // NEW METHOD: Retrieve user by username
+
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }

@@ -29,7 +29,7 @@ public class EmailService {
         return otp;
     }
 
-    // Send OTP via Email
+
     public void sendOtpEmail(String toEmail, String otp) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -41,7 +41,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    // New generic email sender for vulnerability notifications and other emails
+
     public void sendEmail(String toEmail, String subject, String text) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -51,7 +51,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    // Validate OTP (Check if it's not expired)
+
     public boolean validateOtp(String email, String otp) {
         OtpData storedOtp = otpStorage.get(email);
         if (storedOtp != null && storedOtp.getOtp().equals(otp)) {
@@ -66,7 +66,7 @@ public class EmailService {
         return false;
     }
 
-    // Inner class to store OTP and its timestamp
+
     private static class OtpData {
         private final String otp;
         private final long timestamp;

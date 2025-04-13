@@ -57,7 +57,7 @@ public class Notification {
         this.message = message;
     }
 
-    // Annotate so JSON property "read" is mapped to readFlag
+
     @JsonProperty("read")
     public Boolean isReadFlag() {
         return readFlag;
