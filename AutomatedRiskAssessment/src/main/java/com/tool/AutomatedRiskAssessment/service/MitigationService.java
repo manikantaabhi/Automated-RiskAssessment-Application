@@ -62,6 +62,7 @@ public class MitigationService {
     }
 
     public String generateMitigationAsync(Vulnerability vulnerability) {
+    	System.out.println("generating...");
         String prompt = "Provide a short mitigation just in 2 lines for: " + vulnerability.getDescription()
                 + " Please do not add any extra text like Here are details or headings etc, just give me exactly the mitigation";
 
@@ -92,7 +93,13 @@ public class MitigationService {
                     if (mitigationRepository.findByCveId(vulnerability.getCveId()) == null) {
                         mitigationRepository.save(mitigation);
                     }
+                    System.out.println("generated.");
                     return mitigationFinal;
+                    
+                }
+                else
+                {
+                	System.out.println("empty");
                 }
             }
         } catch (SocketTimeoutException e) {
