@@ -13,7 +13,7 @@ public class StartupRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         System.out.println("Fetching data from NVD...");
-        //nvdDataService.fetchAndSaveProducts();
+        nvdDataService.fetchAndSaveProducts();
         System.out.println("NVD data update completed.");
     }
 }
