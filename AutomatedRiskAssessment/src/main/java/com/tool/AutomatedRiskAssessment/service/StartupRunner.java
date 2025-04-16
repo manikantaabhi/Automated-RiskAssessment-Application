@@ -2,9 +2,11 @@ package com.tool.AutomatedRiskAssessment.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
+@Async
 public class StartupRunner implements CommandLineRunner {
 
     @Autowired

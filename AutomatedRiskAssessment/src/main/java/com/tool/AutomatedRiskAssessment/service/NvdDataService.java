@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,6 +25,7 @@ public class NvdDataService {
 
     private static final String CPE_API_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0";
 
+    @Async
     public void fetchAndSaveProducts() {
 
         Map<String, Object> response = restTemplate.getForObject(CPE_API_URL, Map.class);
@@ -35,14 +37,12 @@ public class NvdDataService {
         List<Product> productList = new ArrayList<Product>();
         List<Map<String, Object>> cveItems = (List<Map<String, Object>>) response.get("vulnerabilities");
         List<VulnerabilityDataResponse> responses = new ArrayList<>();
-
         for (Map<String, Object> cveItem : cveItems) {
             Map<String, Object> cveData = (Map<String, Object>) cveItem.get("cve");
             List<Map<String, Object>> configurations = (List<Map<String, Object>>) cveData.get("configurations");
             if(configurations!=null)
             for (Map<String, Object> conf : configurations) {
                 List<Map<String, Object>> nodes = (List<Map<String, Object>>) conf.get("nodes");
-
                 for (Map<String, Object> node : nodes) {
                     List<Map<String, Object>> cpeMatches = (List<Map<String, Object>>) node.get("cpeMatch");
 
