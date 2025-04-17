@@ -10,8 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.tool.AutomatedRiskAssessment.dto.VulnerabilityDataResponse;
 import com.tool.AutomatedRiskAssessment.model.Notification;
-import com.tool.AutomatedRiskAssessment.repo.NotificationRepository;
-import com.tool.AutomatedRiskAssessment.repo.UserRepository;
+import com.tool.AutomatedRiskAssessment.repo.*;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -41,14 +40,14 @@ public class NvdFetcherService {
     @Autowired
     private JavaMailSender mailSender;
     
-    @Scheduled(fixedRate = 2 * 60 * 1000) // Every 5 minutes
+    @Scheduled(fixedRate = 3 * 60 * 1000) // Every 5 minutes
     public void fetchNvdData() {
         // Round down current time to the nearest 5-minute mark
         LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
         int minute = now.getMinute();
-        int roundedMinute = (minute / 2) * 2;
+        int roundedMinute = (minute / 3) * 3;
         LocalDateTime start = now.withMinute(roundedMinute);
-        LocalDateTime end = start.plusMinutes(2);
+        LocalDateTime end = start.plusMinutes(3);
 
         String pubStartDate = formatter.format(start);
         String pubEndDate = formatter.format(end);
@@ -56,6 +55,7 @@ public class NvdFetcherService {
         String url = String.format("https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=%s&pubEndDate=%s", pubStartDate, pubEndDate);
 
         try {
+        	Thread.sleep(500);
             Map<String, Object> response = (Map<String, Object>) restTemplate.getForObject(url, Map.class);
             if (response.containsKey("vulnerabilities")) {
                 System.out.println(response);
