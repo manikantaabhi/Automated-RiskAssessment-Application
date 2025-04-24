@@ -67,11 +67,6 @@ public class Metric {
 	public void setSeverity(String severity) {
 		this.severity = severity;
 	}
-
-	public Metric() {
-    	
-    }
-
     public Metric(String source, Double score, String severity, String cveId) {
         this.source = source;
         this.score = score;

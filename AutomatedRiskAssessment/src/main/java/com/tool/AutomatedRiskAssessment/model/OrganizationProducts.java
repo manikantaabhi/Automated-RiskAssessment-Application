@@ -17,10 +17,6 @@ public class OrganizationProducts {
     private String product;
     private String version;
     private String username;
-    private OrganizationProducts()
-    {
-    	
-    }
 	public OrganizationProducts(String vendor, String product, String version, String userName) {
 		super();
 		this.vendor = vendor;

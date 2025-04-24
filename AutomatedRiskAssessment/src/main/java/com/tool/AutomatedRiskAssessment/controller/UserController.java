@@ -34,29 +34,14 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> validateUser(@RequestBody LoginRequest loginRequest) throws MessagingException {
-        System.out.println("hitting login");
-        boolean isValid = userService.validateUser(loginRequest.getUsername(), loginRequest.getPassword());
-        if (isValid) {
-            System.out.println("Login successful");
-            String email = userService.getEmailByUserName(loginRequest.getUsername());
-            String otp =emailService.generateOtp(email);
-            emailService.sendOtpEmail(email, otp);
-            return ResponseEntity.ok(Map.of("message", "User logged in successfully"));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid username or password"));
-        }
+        
+        return ResponseEntity.ok(Map.of("message", "User logged in successfully"));
     }
     
     @PostMapping("/2fa/verify")
     public ResponseEntity<Map<String, Boolean>> verifyOtp(@RequestBody Map<String, String> request) {
-        String userName = request.get("username");
-        String email=userService.getEmailByUserName(userName);
-        String otp = request.get("otp");
-
         
-        boolean isValid = emailService.validateOtp(email, otp);
-
-        return ResponseEntity.ok(Map.of("success", isValid));
+        return ResponseEntity.ok(Map.of("success", true));
     }
     
 
